@@ -2,49 +2,34 @@
 import styles from "./App.module.css";
 import { useState, useEffect } from "react";
 
-// clean-up fucntion: 컴포넌트가 제거될 때 실행됨
-// return () => {};
-function Hello() {
-  function byeFn() {
-    console.log("Bye :(");
-  }
-  function hiFn() {
-    console.log("Hi :)");
-  }
-  useEffect(hiFn, []);
-  return <h1>Hello</h1>;
-}
-
-
 function App() {
-  const [counter, setValue] = useState(0);
-  const [keyword, setKeyword] = useState("");
-  const onClick = () => setValue(prev => prev +1);
-  const onChange = (event) => setKeyword(event.target.value);
-  // console.log("I run all the time");
-  // useEffect : 해당 코드가 한번만 실행되게 해줌
-  useEffect(() => {
-    console.log("I run only once.")
-  }, []); // keyword가 변화할 때만 실행
-  useEffect(()=> {
-    if (keyword.length > 5) {
-      console.log("I run when 'keyword' changes.");
+  const [todo, setTodo] = useState("");
+  const [todos, setTodos] = useState([]);
+  const onChange = (event) => setTodo(event.target.value);
+  const onSubmit = (event) => {
+    event.preventDefault();
+    if(todo === "") {
+      return;
     }
-  }, [keyword]);
-  useEffect(()=> {
-    console.log("I run when 'counter' changes.");
-  }, [counter]);
+    setTodo("");
+    setTodos(currentArray => [todo, ...currentArray]);
+  };
 
   return (
-    <div className="App">
-      <input 
-        value={keyword} 
-        onChange={onChange}
-        type="text" 
-        placeholder="Search here..." />
-      <h1 className={styles.title}>{counter}</h1>
-      <button onClick={onClick}>click me</button>
-      <Hello />
+    <div>
+      <h1>My To Dos ({todos.length})</h1>
+      <form onSubmit={onSubmit}>
+        <input 
+          onChange={onChange}
+          value={todo}
+          type="text" 
+          placeholder="Write your to do ..." />
+        <button>Add to do</button>
+      </form>
+      <hr />
+      {todos.map((item, index) => (
+        <li key={index}>{item}</li>
+        ))}
     </div>
   );
 }
